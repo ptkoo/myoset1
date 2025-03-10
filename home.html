@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Myoset Satellite</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+
+    <style>
+        /* General reset */
+        body, h1, h2, p {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Body and main container */
+        body {
+            background-color: #f4f7f8;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 60px; /* Add padding for fixed footer */
+        }
+
+        .navbar {
+            background-color: #4c5eaf;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .navbar h1 {
+            font-size: 28px;
+        }
+
+        /* Tabs Section */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            background-color: #fff;
+            border-top: 2px solid #4c5eaf;
+            border-bottom: 2px solid #4c5eaf;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            text-align: center;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+            border-right: 1px solid #ddd;
+            transition: background-color 0.3s ease;
+        }
+
+        .tab:last-child {
+            border-right: none;
+        }
+
+        .tab:hover {
+            background-color: #f0f0f0;
+        }
+
+        .tab.active {
+            background-color: #4c5eaf;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 40px 20px;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Home Section Image */
+        .image-container {
+            height: 70vh;
+            background-image: url('https://earthobservatory.nasa.gov/ContentFeature/Orbits/orbits_diagram2.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-container p {
+            font-size: 20px;
+            margin-top: 15px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* About Section */
+        .About {
+            margin-top: 30px;
+            font-size: 18px;
+            color: #333;
+            text-align: left;
+            padding: 10px 30px;
+        }
+
+        /* Content Sections Styling */
+        .content-section {
+            padding: 40px 20px;
+        }
+
+        /* Video Section */
+        .video-container {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Fixed about-section flex layout */
+        .about-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 30px;
+            margin: 0 auto;
+            max-width: 1200px;
+            flex-wrap: wrap;
+        }
+
+        .about-section .image-container {
+            flex: 1 1 45%;
+            min-width: 300px;
+            max-width: 45%;
+            height: auto;
+            min-height: 400px;
+        }
+
+        .about-section .About {
+            flex: 1 1 45%;
+            min-width: 300px;
+            max-width: 45%;
+            text-align: left;
+            margin-top: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Footer for additional content */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            left: 0;
+        }
+
+        body, h1, h2, p {
+    margin: 0;
+    padding: 8px;
+    font-family: 'Arial', sans-serif;
+}
+
+.date-filter {
+        margin: 20px 0;
+    }
+    .date-filter label {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+    .date-filter input {
+        margin-right: 15px;
+        padding: 5px;
+    }
+    .date-filter button {
+        padding: 5px 10px;
+        background-color: #4c5eaf;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .date-filter button:hover {
+        background-color: #3a4c8b;
+    }
+    .image-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .image-gallery img {
+        width: 80%;
+        height: 100%;
+        border-radius: 5px;
+    }
+/* Flexbox container to align image and chart side by side */
+.content-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    height: 500px; /* Adjust height as needed */
+}
+
+/* Image Wrapper */
+.image-wrapper {
+    flex: 1; /* Equal space for both sections */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.image-gallery {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills the div */
+}
+
+/* Chart Wrapper */
+.chart-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#trend-line-chart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+        /* Animation for fadeIn effect */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .about-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .about-section .image-container,
+            .about-section .About {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+            
+            .about-section .image-container {
+                height: 50vh;
+            }
+        }
+    </style>
+    <script>
+        function showTab(tabId) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            // Add active class to the clicked tab
+            document.querySelector(`#${tabId}-tab`).classList.add('active');
+            
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            
+            // Show the content of the clicked tab
+            document.getElementById(tabId).classList.add('active');
+        }
+
+
+
+        let currentInterval; // To store the interval reference
+
+function filterImages() {
+    const startDate = document.getElementById('start-date').value;
+    const endDate = document.getElementById('end-date').value;
+    const imageContainer = document.getElementById('image-container');
+
+    // Clear previous images
+    imageContainer.innerHTML = '';
+
+    if (!startDate || !endDate) {
+        alert('Please select both start and end dates');
+        return;
+    }
+
+    // Convert the start and end dates to Date objects
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Create an array to store valid image URLs
+    let images = [];
+    
+    // Function to check if an image exists
+    function checkImageExists(imageUrl, callback) {
+        const img = new Image();
+        img.src = imageUrl;
+        img.onload = () => callback(true, imageUrl);
+        img.onerror = () => callback(false, imageUrl);
+    }
+
+    // Collect images from the specified range
+    let currentDate = new Date(start);
+    let pendingRequests = 0; // Track pending checks
+
+    while (currentDate <= end) {
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = currentDate.getDate().toString().padStart(2, '0');
+
+        const formattedDate = `${year}${month}${day}`;
+        const imageUrl = `./2024/RDEFT4_${formattedDate}.png`;
+
+        pendingRequests++; // Increment pending requests count
+
+        // Check if the image exists before adding it
+        checkImageExists(imageUrl, (exists, url) => {
+            pendingRequests--; // Decrement pending requests count
+            if (exists) {
+                images.push(url);
+            }
+            // If all checks are done and we have images, start displaying them
+            if (pendingRequests === 0 && images.length > 0) {
+                startImageSlideshow(images);
+            }
+        });
+
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Function to start the slideshow
+    function startImageSlideshow(images) {
+         // Make an API request to fetch trend line data
+        fetch(`http://localhost:5000/get_sea_ice_trend?startYear=${start.getFullYear()}&startMonth=${start.getMonth() + 1}&startDay=${start.getDate()}&endYear=${end.getFullYear()}&endMonth=${end.getMonth() + 1}&endDay=${end.getDate()}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                plotTrendLine(data);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        let currentIndex = 0;
+        
+        // If an interval is already running, clear it before starting a new one
+        if (currentInterval) {
+            clearInterval(currentInterval);
+        }
+
+        const img = document.createElement('img');
+        img.src = images[currentIndex];
+        img.alt = `Image from ${images[currentIndex]}`;
+        img.style.margin = '10px';
+        imageContainer.appendChild(img);
+
+        // Set up an interval to cycle through the images every 1 second (1000ms)
+        currentInterval = setInterval(function () {
+            imageContainer.innerHTML = '';
+
+            currentIndex = (currentIndex + 1) % images.length;
+            img.src = images[currentIndex];
+            img.alt = `Image from ${images[currentIndex]}`;
+            imageContainer.appendChild(img);
+
+        }, 100); // Change interval time as needed
+
+        // Stop the interval once all images are displayed
+        setTimeout(() => clearInterval(currentInterval), images.length * 1000);
+    }
+
+   
+}
+
+
+function plotTrendLine(data) {
+    const dates = data.dates; // X-axis (dates)
+    const meanThickness = data.mean_thickness; // Y-axis (mean thickness values)
+    const trendLine = data.trend_line; // Y-axis (trendline values)
+
+    const ctx = document.getElementById('trend-line-chart').getContext('2d');
+    const trendLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates, // X-axis (dates)
+            datasets: [
+                {
+                    label: 'Mean Sea Ice Thickness',
+                    data: meanThickness, // Y-axis (mean thickness values)
+                    borderColor: 'blue',
+                    fill: false,
+                    pointRadius: 3
+                },
+                {
+                    label: 'Trend Line',
+                    data: trendLine, // Y-axis (trendline values)
+                    borderColor: 'red', // Different color for trendline
+                    borderDash: [5, 5], // Dashed line for better distinction
+                    fill: false,
+                    pointRadius: 0 // No points for trendline
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    },
+                    adapters: {
+                        date: {
+                            locale: 'en'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    min: 1.3, max: 2.3,
+                    title: { display: true, text: 'Mean Sea Ice Thickness (Meters)' }
+                }
+            },
+            plugins: {
+                legend: { display: true }
+            }
+        }
+    });
+}
+
+
+
+    </script>
+</head>
+<body>
+    <!-- Navbar Section -->
+    <div class="navbar">
+        <h1>MyoSet1 Data Viewer</h1>
+    </div>
+    
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+        <div id="home-tab" class="tab active" onclick="showTab('home')">Home</div>
+        <div id="data-analysis-tab" class="tab" onclick="showTab('data-analysis')">SIRAL Data Analysis</div>
+        <div id="image-quality-tab" class="tab" onclick="showTab('image-quality')">Image Quality Test</div>
+    </div>
+
+    <!-- Tab Content Sections -->
+    <div id="home" class="tab-content active">
+        <div class="about-section">
+            <!-- Image and About Section -->
+            <div class="image-container">
+                <img src="./cubesat-og.jpg" alt="Satellite Orbits">
+            </div>
+
+            <div class="About">
+                <h2>About CubeSat Constellation</h2>
+                <p>The MyoSet CubeSat constellation consists of five observer satellites monitoring polar climate conditions. They collect high-resolution imagery and environmental data, transmitting it to a central Mother CubeSat. This hub filters, analyzes, and assesses image quality in real time before sending processed data to ground stations. The system optimizes bandwidth and ensures researchers receive high-quality, relevant climate insights.</p>
+            </div>
+        </div>
+
+        <!-- Video Section -->
+        <div class="video-container">
+            <h3>MyoSet Constellation</h3>
+            <video controls width="600">
+                <source src="your_video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <div id="data-analysis" class="tab-content content-section">
+        <h2>SIRAL Data Analysis</h2>
+        
+        <!-- Date Filter Section -->
+        <div class="date-filter">
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date">
+            
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date">
+            
+            <button onclick="filterImages()">Filter</button>
+        </div>
+        
+        <div class="content-container">
+            <!-- Image Wrapper -->
+            <div class="image-wrapper">
+                <div id="image-container" class="image-gallery">
+                    <!-- Filtered images will be displayed here -->
+                </div>
+            </div>
+        
+            <!-- Chart Wrapper -->
+            <div class="chart-wrapper">
+                <canvas id="trend-line-chart"></canvas>
+            </div>
+        </div>
+        
+       
+    </div>
+
+    <div id="image-quality" class="tab-content content-section">
+        <h2>Image Quality Test</h2>
+        <p>Testing and evaluating the image quality model to ensure high-resolution data transmission from CubeSats.</p>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 MyoSet Satellite | All Rights Reserved</p>
+    </footer>
+</body>
+</html>
